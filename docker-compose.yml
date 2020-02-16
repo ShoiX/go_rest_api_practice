@@ -1,0 +1,27 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:10
+    environment:
+      POSTGRES_PASSWORD: nwbrnlgndz
+      POSTGRES_USER: user
+      POSTGRES_DB: library
+    volumes:
+      - ${PWD}/create.sql:/docker-entrypoint-initdb.d/create.sql
+    ports:
+      - 6666:5432
+    restart: always
+  backend:
+    build:
+      context: $PWD
+      dockerfile: $PWD/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_URI: postgres://user:nwbrnlgndz@postgres/library
+      BACKEND_PORT: 8080
+    restart: always
+    volumes:
+      - "${PWD}:/app"
+    ports:
+      - 8080:8080
